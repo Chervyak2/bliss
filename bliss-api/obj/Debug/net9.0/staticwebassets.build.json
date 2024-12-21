@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "NU9VbIynvGm3H9JFuQTUY2NqmxRv5+iOWpJ7xozbWV0=",
+  "Source": "bliss-api",
+  "BasePath": "_content/bliss-api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

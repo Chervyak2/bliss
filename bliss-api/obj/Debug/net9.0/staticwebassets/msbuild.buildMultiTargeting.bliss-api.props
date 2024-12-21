@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/bliss-api.props" />
+</Project>
