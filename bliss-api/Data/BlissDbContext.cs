@@ -5,14 +5,14 @@ namespace Data
 {
     public class SalonDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; } = null!;
-        public DbSet<Service> Services { get; set; } = null!;
-        public DbSet<Appointment> Appointments { get; set; } = null!;
-        public DbSet<Schedule> Schedules { get; set; } = null!;
 
         public SalonDbContext(DbContextOptions<SalonDbContext> options) : base(options)
         {
         }
+        public DbSet<Appointment> Appointments { get; set; } = null!;
+        public DbSet<Schedule> Schedules { get; set; } = null!;
+        public DbSet<Service> Services { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

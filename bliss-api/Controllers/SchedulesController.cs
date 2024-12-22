@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Models;
@@ -22,13 +23,16 @@ namespace bliss_api.Controllers
         }
 
         // GET: api/Schedules
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedules()
         {
+            // Allow all authenticated users to view schedules
             return await _context.Schedules.ToListAsync();
         }
 
         // GET: api/Schedules/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Schedule>> GetSchedule(int id)
         {
@@ -39,11 +43,12 @@ namespace bliss_api.Controllers
                 return NotFound();
             }
 
+            // Allow all authenticated users to view a specific schedule
             return schedule;
         }
 
         // PUT: api/Schedules/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin,Master")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSchedule(int id, Schedule schedule)
         {
@@ -74,7 +79,7 @@ namespace bliss_api.Controllers
         }
 
         // POST: api/Schedules
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin,Master")]
         [HttpPost]
         public async Task<ActionResult<Schedule>> PostSchedule(Schedule schedule)
         {
@@ -85,6 +90,7 @@ namespace bliss_api.Controllers
         }
 
         // DELETE: api/Schedules/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSchedule(int id)
         {

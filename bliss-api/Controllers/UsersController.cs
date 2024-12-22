@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Models;
+using Microsoft.AspNetCore.Authorization;
+using bliss_api.Services;
 
 namespace bliss_api.Controllers
 {
@@ -15,13 +19,17 @@ namespace bliss_api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly SalonDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UsersController(SalonDbContext context)
+        public UsersController(IConfiguration configuration, SalonDbContext context)
         {
+            _configuration = configuration;
             _context = context;
+
         }
 
         // GET: api/Users
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
@@ -29,21 +37,35 @@ namespace bliss_api.Controllers
         }
 
         // GET: api/Users/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user ID
 
-            if (user == null)
+            if (userId == null)
             {
-                return NotFound();
+                return Unauthorized("User not authenticated.");
             }
 
-            return user;
+            int loggedInUserId = int.Parse(userId);
+
+            if (User.IsInRole("Admin") || id == loggedInUserId) // Allow admin or the user to view their own data
+            {
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                return user;
+            }
+
+            return Forbid(); // Forbidden if the user tries to access another user's data
         }
 
         // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
@@ -74,7 +96,7 @@ namespace bliss_api.Controllers
         }
 
         // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -85,6 +107,7 @@ namespace bliss_api.Controllers
         }
 
         // DELETE: api/Users/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -98,6 +121,48 @@ namespace bliss_api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginRequest request)
+        {
+            var user = _context.Users.SingleOrDefault(u => u.Email == request.Username && u.Password == request.Password);
+
+            if (user != null)
+            {
+                var tokenService = new TokenService(_configuration);
+                var token = tokenService.GenerateToken(user.Id, user.Email, user.Role); // Pass user ID, email, and role
+                return Ok(new { Token = token });
+            }
+
+            return Unauthorized("Invalid username or password.");
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<ActionResult<User>> GetLoggedInUser()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get the userId from JWT claim
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+
+            int userId = int.Parse(userIdClaim);
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(user);
+        }
+
+        public class LoginRequest
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
         }
 
         private bool UserExists(int id)

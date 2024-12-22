@@ -266,3 +266,4 @@
 /home/chervyak/Documents/bliss/bliss-api/bin/Debug/net9.0/runtimes/win-x64/native/Microsoft.Data.SqlClient.SNI.dll
 /home/chervyak/Documents/bliss/bliss-api/bin/Debug/net9.0/runtimes/win-x86/native/Microsoft.Data.SqlClient.SNI.dll
 /home/chervyak/Documents/bliss/bliss-api/bin/Debug/net9.0/runtimes/win/lib/net6.0/System.Runtime.Caching.dll
+/home/chervyak/Documents/bliss/bliss-api/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
