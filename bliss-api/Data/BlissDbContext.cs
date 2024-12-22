@@ -5,27 +5,41 @@ namespace Data
 {
     public class SalonDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Service> Services { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Service> Services { get; set; } = null!;
+        public DbSet<Appointment> Appointments { get; set; } = null!;
+        public DbSet<Schedule> Schedules { get; set; } = null!;
 
-        public SalonDbContext(DbContextOptions<SalonDbContext> options) : base(options) { }
+        public SalonDbContext(DbContextOptions<SalonDbContext> options) : base(options)
+        {
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            // Additional constraints and relationships
+            // Appointment relationships
             modelBuilder.Entity<Appointment>()
-                .HasOne(a => a.User)
-                .WithMany(u => u.Appointments)
-                .HasForeignKey(a => a.UserId);
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Appointment>()
-                .HasOne(a => a.Master)
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(a => a.MasterId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Appointment>()
+                .HasOne<Service>()
+                .WithMany()
+                .HasForeignKey(a => a.ServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Schedule relationships
+            modelBuilder.Entity<Schedule>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(s => s.MasterId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
