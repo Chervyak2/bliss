@@ -47,25 +47,26 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Seed database with initial data (optional)
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    SeedDatabase(services);
-}
+// Helper method to seed initial data
+// void SeedDatabase(IServiceProvider services)
+// {
+//     using var context = services.GetRequiredService<SalonDbContext>();
+//     if (!context.Users.Any())
+//     {
+//         context.Users.AddRange(
+//             new User { Name = "John Doe", Email = "john@example.com", Role = "Customer", Password = "password123" },
+//             new User { Name = "Jane Smith", Email = "jane@example.com", Role = "Master", Password = "password123" }
+//         );
+//         context.SaveChanges();
+//     }
+// }
+
+// // Seed database with initial data (optional)
+// using (var scope = app.Services.CreateScope())
+// {
+//     var services = scope.ServiceProvider;
+//     SeedDatabase(services);
+// }
 
 app.Run();
 
-// Helper method to seed initial data
-void SeedDatabase(IServiceProvider services)
-{
-    using var context = services.GetRequiredService<SalonDbContext>();
-    if (!context.Users.Any())
-    {
-        context.Users.AddRange(
-            new User { Name = "John Doe", Email = "john@example.com", Role = "Customer", Password = "password123" },
-            new User { Name = "Jane Smith", Email = "jane@example.com", Role = "Master", Password = "password123" }
-        );
-        context.SaveChanges();
-    }
-}
