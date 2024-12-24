@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("bliss-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6bc2acc08ea4247bbeaf5ff490ac9eea3c62f337")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b820263d95442cb600df6a295414974d9bbedb70")]
 [assembly: System.Reflection.AssemblyProductAttribute("bliss-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("bliss-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
