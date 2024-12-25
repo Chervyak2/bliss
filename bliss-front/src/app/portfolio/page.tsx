@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 export default function Portfolio() {
   const portfolioItems = [
@@ -13,7 +14,7 @@ export default function Portfolio() {
         {portfolioItems.map((item) => (
           <div key={item.id}>
             <h3>{item.title}</h3>
-            <img src={item.imageUrl} alt={item.title} width={200} />
+            <Image src={item.imageUrl} alt={item.title} width={200} height={200}/>
           </div>
         ))}
       </div>

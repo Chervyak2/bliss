@@ -126,16 +126,24 @@ namespace bliss_api.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            var user = _context.Users.SingleOrDefault(u => u.Email == request.Username && u.Password == request.Password);
-
-            if (user != null)
+            // Validate input
+            if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
             {
-                var tokenService = new TokenService(_configuration);
-                var token = tokenService.GenerateToken(user.Id, user.Email, user.Role); // Pass user ID, email, and role
-                return Ok(new { Token = token });
+                return BadRequest("Username and password are required.");
             }
 
-            return Unauthorized("Invalid username or password.");
+            // Authenticate user using email/username and password
+            var user = _context.Users.SingleOrDefault(u => u.Email == request.Username && u.Password == request.Password);
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid username or password.");
+            }
+
+            // Generate JWT token
+            var tokenService = new TokenService(_configuration);
+            var token = tokenService.GenerateToken(user.Id, user.Email, user.Role); // Use role from the database
+            return Ok(new { Token = token });
         }
 
         [Authorize]

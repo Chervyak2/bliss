@@ -1,29 +1,48 @@
 "use client";
+import React, { useEffect, useState } from "react";
+import api from "../../utils/api";
 
-import { useState } from "react";
-
-interface Appointment {
+interface Schedule {
   id: number;
-  service: string;
-  time: string;
+  availableDate: string;
+  startTime: string;
+  endTime: string;
+  masterId: number;
 }
 
-export default function Schedule() {
-  const [appointments, setAppointments] = useState<Appointment[]>([
-    { id: 1, service: "Haircut", time: "10:00 AM" },
-    { id: 2, service: "Nail Art", time: "12:00 PM" },
-  ]);
+const Schedule = () => {
+  const [data, setData] = useState<Schedule[]>([]);
+
+  useEffect(() => {
+    api
+      .get("/Schedules")
+      .then((response) => {
+        console.log("API Response:", response.data); // Debug response
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching schedule:", error);
+      });
+  }, []);
 
   return (
     <div>
       <h1>Schedule</h1>
-      <ul>
-        {appointments.map((appointment) => (
-          <li key={appointment.id}>
-            {appointment.service} at {appointment.time}
-          </li>
-        ))}
-      </ul>
+      {data.length === 0 ? (
+        <p>No schedules available.</p>
+      ) : (
+        <ul>
+          {data.map((item) => (
+            <li key={item.id}>
+              Date: {new Date(item.availableDate).toLocaleDateString()} <br />
+              Time: {item.startTime} - {item.endTime} <br />
+              Master ID: {item.masterId}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
-}
+};
+
+export default Schedule;
