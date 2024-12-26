@@ -14,8 +14,8 @@ export default function Masters() {
   useEffect(() => {
     // Placeholder for fetching masters
     setMasters([
-      { id: 1, name: "Alice", expertise: "Hair Styling" },
-      { id: 2, name: "Bob", expertise: "Nail Art" },
+      { id: 1, name: "plpacejholder", expertise: "Hair Styling" },
+      { id: 2, name: "placeholder", expertise: "Nail Art" },
     ]);
   }, []);
 

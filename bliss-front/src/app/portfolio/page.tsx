@@ -3,8 +3,8 @@ import Image from "next/image";
 
 export default function Portfolio() {
   const portfolioItems = [
-    { id: 1, title: "Hair Styling", imageUrl: "/images/hair-styling.jpg" },
-    { id: 2, title: "Nail Art", imageUrl: "/images/nail-art.jpg" },
+    { id: 1, title: " placeholder" },
+    { id: 2, title: "placeholder" },
   ];
 
   return (
@@ -14,7 +14,6 @@ export default function Portfolio() {
         {portfolioItems.map((item) => (
           <div key={item.id}>
             <h3>{item.title}</h3>
-            <Image src={item.imageUrl} alt={item.title} width={200} height={200}/>
           </div>
         ))}
       </div>
